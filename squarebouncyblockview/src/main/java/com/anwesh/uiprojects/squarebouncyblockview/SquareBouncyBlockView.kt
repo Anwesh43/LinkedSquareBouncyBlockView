@@ -12,30 +12,33 @@ import android.graphics.Paint
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.RectF
+import android.util.Log
 
 val nodes : Int = 5
 val squares : Int = 4
-val scGap : Float = 0.005f
+val scGap : Float = 0.01f
 val delay : Long = 30
-val foreColor : Int = Color.parseColor("#311B92")
+val foreColors : Array<String> = arrayOf("#311B92", "#1B5E20", "#0D47A1", "#004D40")
 val backColor : Int = Color.parseColor("#BDBDBD")
 
 fun Int.inverse() : Float = 1f / this
-fun Float.maxScale(i : Int, n : Int) : Float = Math.max(0f, this - i * n)
+fun Float.maxScale(i : Int, n : Int) : Float = Math.max(0f, this - i * n.inverse())
 fun Float.divideScale(i : Int, n : Int) : Float = Math.min(n.inverse(), maxScale(i, n)) * n
 fun Float.sinify() : Float = Math.sin(this * Math.PI).toFloat()
 
 fun Canvas.drawSquareBouncyBlock(i : Int, gap : Float, size : Float, scale : Float, paint : Paint) {
     val sc : Float = scale.sinify().divideScale(i, squares)
+    Log.d("i:$i", "sc:$sc")
+    paint.color = Color.parseColor(foreColors[i])
     save()
-    translate(i * (gap + 1) + gap * sc, 0f)
+    translate(2 * i * gap + gap / 2 + (2 * gap - size / 2) * sc, 0f)
     drawRect(RectF(-size / 2, -size / 2, size / 2, size / 2), paint)
     restore()
 }
 
 fun Canvas.drawSquareBouncyBlocks(w : Float, scale : Float, paint : Paint) {
-    val gap : Float = scale / (2 * squares + 1)
-    for (j in 0..(squares)) {
+    val gap : Float = w / (2 * squares + 1)
+    for (j in 0..(squares - 1)) {
         drawSquareBouncyBlock(j, gap, gap, scale, paint)
     }
 }
@@ -43,7 +46,6 @@ fun Canvas.drawSquareBouncyBlocks(w : Float, scale : Float, paint : Paint) {
 fun Canvas.drawSBBNode(i : Int, scale : Float, paint : Paint) {
     val h : Float = height.toFloat()
     val w : Float = width.toFloat()
-    paint.color = foreColor
     val gap : Float = h / (nodes + 1)
     save()
     translate(0f, gap * (i + 1))
