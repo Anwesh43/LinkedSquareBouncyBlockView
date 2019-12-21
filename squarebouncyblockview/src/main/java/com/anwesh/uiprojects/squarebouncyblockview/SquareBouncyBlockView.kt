@@ -180,4 +180,26 @@ class SquareBouncyBlockView(ctx : Context) : View(ctx) {
             curr.startUpdating(cb)
         }
     }
+
+    data class Renderer(var view : SquareBouncyBlockView) {
+
+        private val animator : Animator = Animator(view)
+        private val sbb : SquareBouncyBlock = SquareBouncyBlock(0)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(backColor)
+            sbb.draw(canvas, paint)
+            animator.animate {
+                sbb.update {
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            sbb.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
