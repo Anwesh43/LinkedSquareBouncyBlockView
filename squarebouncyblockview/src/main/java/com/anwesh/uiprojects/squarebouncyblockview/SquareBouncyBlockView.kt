@@ -204,4 +204,13 @@ class SquareBouncyBlockView(ctx : Context) : View(ctx) {
             }
         }
     }
+
+    companion object {
+
+        fun create(activity : Activity) : SquareBouncyBlockView {
+            val view : SquareBouncyBlockView = SquareBouncyBlockView(activity)
+            activity.setContentView(view)
+            return view
+        }
+    }
 }
